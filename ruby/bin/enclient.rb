@@ -39,10 +39,10 @@ require 'net/https'
 # Load libraries required by the Evernote OAuth
 require 'oauth'
 require 'oauth/consumer'
- 
+
 # Load Thrift & Evernote Ruby libraries
 require "evernote_oauth"
- 
+
 # Client credentials
 #OAUTH_CONSUMER_KEY = "your key"
 #OAUTH_CONSUMER_SECRET = "your secret"
@@ -182,7 +182,7 @@ module EnClient
             end
             str += "))"
           when :field_type_object
-            str += "(#{varsym} . " 
+            str += "(#{varsym} . "
             str += varval.to_sexp
             str += ")"
           else
@@ -302,7 +302,7 @@ module EnClient
   APPLICATION_NAME_XHTML = %|emacs-enclient {:version => 0.41, :editmode => "XHTML"}|
 
   #EVERNOTE_HOST       = "sandbox.evernote.com"
-  EVERNOTE_HOST       = "www.evernote.com"
+  EVERNOTE_HOST       = "app.yinxiang.com"
   USER_STORE_URL      = "https://#{EVERNOTE_HOST}/edam/user"
   NOTE_STORE_URL_BASE = "https://#{EVERNOTE_HOST}/edam/note/"
 
@@ -546,6 +546,7 @@ module EnClient
 
     def exec_impl
       Formatter.to_ascii @title, @content, *@tag_names
+      @title.force_encoding Encoding::UTF_8
 
       note = Evernote::EDAM::Type::Note.new
       note.title = @title
@@ -584,7 +585,8 @@ module EnClient
     include FormatNoteOperation
 
     def exec_impl
-      Formatter.to_ascii @title, @notebook_guid, @content, *@tag_names
+      Formatter.to_ascii @title, @notebook_guid, *@tag_names
+      @content.force_encoding Encoding::UTF_8
 
       old_note = DBUtils.get_note dm, @guid
 
@@ -595,6 +597,7 @@ module EnClient
       else
         note.title = old_note.title
       end
+      note.title.force_encoding Encoding::UTF_8
       note.notebookGuid = @notebook_guid
       note.tagNames = @tag_names
       if @edit_mode
@@ -1826,7 +1829,11 @@ module EnClient
     end
 
     def self.sexp_string_escape(str)
-      str.gsub(/\\/,'\&\&').gsub(/"/, '\\"')
+      ret = str
+      if str.is_a? String
+        ret = str.gsub(/\\/,'\&\&').gsub(/"/, '\\"')
+      end
+      ret
     end
 
     def self.remove_package_names(full_class_name)

@@ -162,7 +162,7 @@
   :group 'evernote
   :type '(list string))
 
-(defcustom evernote-enml-formatter-command 
+(defcustom evernote-enml-formatter-command
   '("w3m" "-dump" "-I" "UTF8" "-O" "UTF8")
   "*Formatter for xhtml"
   :group 'evernote)
@@ -180,7 +180,7 @@
 
 (defcustom evernote-developer-token nil
   "*An developer token of your evernote."
-  :link '(url-link 
+  :link '(url-link
           "http://dev.evernote.com/doc/articles/authentication.php#devtoken")
   :group 'evernote
   :type 'string)
@@ -574,7 +574,7 @@
   (interactive)
   (if (called-interactively-p) (enh-clear-onmem-cache))
   (if evernote-developer-token
-      (enh-command-login-token evernote-developer-token) 
+      (enh-command-login-token evernote-developer-token)
     (unwind-protect
         (let* ((cache (enh-password-cache-load))
                (usernames (mapcar #'car cache))
@@ -583,8 +583,8 @@
                                           (car usernames) 'usernames)))
                (cache-passwd (enutil-aget username cache)))
           (unless (and cache-passwd
-                       (eq (catch 'error 
-                             (progn 
+                       (eq (catch 'error
+                             (progn
                                (enh-command-login username cache-passwd)
                                t))
                            t))
@@ -1748,7 +1748,7 @@
 ;; Functions for executing the external command (enh-command-xxx)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defvar enh-enclient-command "/usr/bin/enclient.rb"
+(defvar enh-enclient-command "enclient.rb"
   "Name of the enclient.rb command")
 (defconst enh-command-process-name "Evernote-Client")
 (defconst enh-command-output-buffer-name "*Evernote-Client-Output*")
